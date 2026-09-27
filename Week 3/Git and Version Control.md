@@ -1,3 +1,4 @@
+Week Recap: A Small Milestone That Feels Huge 🚀
 I still remember staring at Git commands a few weeks ago, completely lost — commit, push, pull, merge... it all felt like a foreign language.
 
 💡 The Breakthrough
