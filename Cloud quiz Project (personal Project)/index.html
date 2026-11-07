@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cloud Engineering Quiz</title>
+<style>
+:root{--bg:#eef2f4;--ink:#12262e;--mute:#5a6e76;--card:#fff;--line:#cfdadf;--acc:#0f766e;--accfg:#fff;--ok:#157347;--bad:#b42318;--term:#0e1b22;--termfg:#d9f2ee}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1519;--ink:#e3eef0;--mute:#8fa5ac;--card:#142126;--line:#27393f;--acc:#3cc4b4;--accfg:#04201c;--ok:#4cc38a;--bad:#f2766b;--term:#050b0e;--termfg:#c9efe9}}
+*{box-sizing:border-box}
+html{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:max(16px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom))}
+main{max-width:640px;margin:0 auto}
+h1{font:700 1.6rem/1.2 Georgia,"Times New Roman",serif;margin:8px 0 4px}
+h2{font:700 1.15rem/1.3 Georgia,serif;margin:24px 0 8px}
+p{margin:6px 0}
+.mute{color:var(--mute);font-size:.92rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0}
+label{display:block;font-weight:600;margin-bottom:6px}
+input[type=text]{width:100%;padding:11px 12px;font:inherit;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:11px 14px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.primary{background:var(--acc);color:var(--accfg);border-color:var(--acc);font-weight:700}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.modes button{flex:1;min-width:140px;text-align:left}
+.modes button[aria-pressed=true]{border-color:var(--acc);box-shadow:inset 0 0 0 2px var(--acc)}
+.modes small{display:block;color:var(--mute)}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:6px 0 14px}
+.bar i{display:block;height:100%;background:var(--acc)}
+.meta{display:flex;justify-content:space-between;font-size:.9rem;color:var(--mute)}
+.term{background:var(--term);color:var(--termfg);font:1.05rem/1.5 ui-monospace,Menlo,Consolas,monospace;padding:18px;border-radius:10px;margin:8px 0 14px}
+.opt{display:flex;gap:10px;width:100%;text-align:left;margin:8px 0;padding:12px}
+.opt b{min-width:1.4em}
+.opt.ok{border-color:var(--ok);box-shadow:inset 0 0 0 2px var(--ok)}
+.opt.bad{border-color:var(--bad);box-shadow:inset 0 0 0 2px var(--bad)}
+.exp{border-left:4px solid var(--acc);padding:6px 12px;margin:12px 0;background:var(--card)}
+.big{font:700 2.6rem/1 Georgia,serif}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line)}
+.tag{font-size:.8rem;color:var(--mute)}
+.miss{border-bottom:1px solid var(--line);padding:10px 0}
+.miss:last-child{border:0}
+.right{color:var(--ok);font-weight:600}
+@media print{body{background:#fff;color:#000}.noprint{display:none!important}.card{border:0;padding:0}}
+@media(prefers-reduced-motion:no-preference){.bar i{transition:width .3s}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+const RAW=`Linux commands|e|Which command lists the files in a directory?|cd|ls|pwd|mkdir|1|ls lists directory contents. cd changes directory, pwd prints where you are, mkdir makes a directory.
+Linux commands|e|Which command creates a new, empty file?|touch|rm|mv|cat|0|touch creates an empty file (or updates a file’s timestamp).
+Linux commands|e|Which command shows the directory you are currently in?|whoami|ls|pwd|echo|2|pwd means print working directory.
+Linux commands|e|Which command adds a new user on a Linux system?|usermod|useradd|passwd|groupadd|1|useradd creates a user. passwd sets the password, usermod changes an existing user.
+Linux commands|e|Which command runs something with administrator privileges?|root|admin|sudo|su-do|2|sudo runs one command as the superuser.
+Linux commands|e|Which command refreshes the package list on Ubuntu?|apt update|apt upgrade|apt install|apt remove|0|apt update refreshes the list. apt upgrade installs newer versions of what you have.
+Cloud models|e|Which model gives you virtual machines, storage and networking that you manage yourself?|SaaS|PaaS|IaaS|DaaS|2|IaaS: the provider supplies raw infrastructure and you manage the OS and above. EC2 is IaaS.
+Cloud models|e|Gmail is a classic example of which service model?|IaaS|PaaS|SaaS|FaaS|2|SaaS is a finished application you just log in and use.
+AWS and networking|e|What is Amazon EC2 mainly used for?|Object storage|Virtual servers in the cloud|DNS management|Email delivery|1|EC2 gives you virtual servers (instances).
+Cloud models|e|What is Google’s equivalent of EC2 called?|Cloud Functions|Cloud Storage|Compute Engine|App Engine|2|Google Compute Engine is the IaaS virtual machine service.
+Bash|e|Which first line tells the system to run a script with bash?|#!/bin/bash|//bash|$bash|&bash|0|#! is the shebang, followed by the interpreter path.
+Permissions|e|Which command makes a script executable?|chmod +x|chown|mkdir|exec|0|chmod changes permissions. +x adds the execute permission.
+Bash|e|In a bash script, how do you print text to the screen?|print|echo|say|output|1|echo prints text.
+Cron|m|Which command opens your personal cron job list for editing?|crontab -e|cron -start|schedule -e|at -e|0|crontab -e edits your cron table.
+Cron|m|What does the cron schedule * * * * * mean?|Once a year|Every minute|Every hour|At midnight|1|Five stars means every minute of every hour, day and month.
+Permissions|m|In rwxr-xr-x, what can the group do?|Read, write and execute|Read and write only|Read and execute only|Nothing|2|The string is owner, group, others. rwx is the owner, r-x is the group (read and execute), r-x is others.
+Permissions|m|Which command changes the owner of a file?|chmod|chown|chgrp|passwd|1|chown = owner, chmod = mode (permissions).
+AWS and networking|e|Which AWS service is used for object storage, like hosting a static website?|EC2|RDS|S3|Lambda|2|S3 stores objects and can host static sites.
+AWS and networking|e|Which file type is used to log in to EC2 over SSH with a key pair?|.zip|.pem|.exe|.txt|1|The .pem file holds your private key.
+AWS and networking|m|What is the main purpose of a bastion host?|Store backups|Balance traffic|Be a secure entry point to a private subnet|Host databases|2|You SSH into the bastion (in the public subnet), then hop to private instances.
+AWS and networking|e|What does VPC stand for?|Virtual Private Cloud|Virtual Public Connection|Variable Processing Core|Verified Protected Cluster|0|A VPC is your own isolated network inside AWS.
+AWS and networking|m|What is a subnet?|A type of database|A smaller range of IP addresses inside a VPC|A billing report|A backup tool|1|Subnets split a VPC’s IP range into smaller parts, often public and private.
+AWS and networking|m|What makes a subnet public?|A bigger IP range|Its route table has a route to an Internet Gateway|More instances|A different region|1|Public = route to an Internet Gateway.
+AWS and networking|m|What acts as a virtual firewall for an EC2 instance?|Route table|Elastic IP|Security group|AMI|2|Security groups control inbound and outbound traffic per instance.
+AWS and networking|h|What does a NAT gateway allow?|The internet to start connections to private instances|Private instances to start outbound connections to the internet|Users to SSH into private servers|Load balancing across zones|1|NAT gateways allow outbound-initiated traffic only. It sits in a public subnet and the private route table points 0.0.0.0/0 to it. Not free-tier.
+Linux commands|e|Which command copies a file?|mv|cp|rm|cat|1|cp copies, mv moves or renames.
+Linux commands|e|Which command deletes a file?|rm|rmdir|touch|less|0|rm removes files. rmdir removes empty directories.
+Linux commands|e|Which command prints a file’s contents to the screen?|cat|cd|chmod|mkdir|0|cat shows file contents.
+Cloud models|e|Which model gives you a ready-made application you just log in and use?|IaaS|PaaS|SaaS|VPC|2|SaaS examples: Gmail, Salesforce, Zendesk.
+Cloud models|e|Which of these is a major cloud service provider?|Microsoft Azure|Ubuntu|Bash|Crontab|0|The big three are AWS, Microsoft Azure and Google Cloud.
+Linux commands|e|Which command shows your current username?|whoami|who|id -a|users|0|whoami prints the current user.
+Linux commands|m|Which command sets a user’s password?|useradd|passwd|chpasswd -a|setpass|1|passwd sets or changes a password.
+Linux commands|e|Which command installs a package on Ubuntu?|apt install|apt fetch|apt get -i|apt add|0|apt install installs packages.
+Cron|h|In the cron entry 0 2 * * *, when does the job run?|Every two minutes|Two minutes past every hour|Every day at 2 a.m.|The 2nd of every month|2|Fields: minute, hour, day of month, month, day of week. 0 2 means minute 0 of hour 2, daily.
+Bash|m|What does $name do in bash?|Comments out the line|Expands to the variable’s value|Deletes the variable|Starts a loop|1|$ in front of a variable name gives its value. Comments start with #.
+Cloud models|m|Which model lets you deploy code without managing the operating system?|IaaS|PaaS|SaaS|DaaS|1|PaaS: the provider manages OS and runtime. Examples: Elastic Beanstalk, App Engine.
+AWS and networking|h|What is an AMI?|A billing alert|A template used to launch EC2 instances|A type of subnet|A storage class|1|An Amazon Machine Image bundles the OS and software. Choosing Ubuntu when launching an instance means choosing an AMI.
+Ports|m|Which port does SSH use by default?|21|22|80|443|1|22 SSH, 80 HTTP, 443 HTTPS, 3306 MySQL.
+AWS and networking|m|Which AWS service is a managed relational database?|S3|Lambda|RDS|CloudFront|2|RDS runs managed databases such as MySQL.
+Permissions|m|Which command shows file permissions in long format?|ls -l|ls -a|cat -p|pwd -l|0|ls -l shows permissions, owner, size and date.
+Cron|m|In a cron entry, which field comes first?|Hour|Minute|Day of month|Command|1|Order: minute, hour, day of month, month, day of week.
+Bash|e|In bash, which symbol starts a comment line?|#|$|/|!|0|Anything after # is ignored by bash.
+Ports|m|Which port does HTTPS use by default?|22|80|443|3306|2|22 SSH, 80 HTTP, 443 HTTPS, 3306 MySQL.
+AWS and networking|m|What do you pick at launch to decide which operating system an EC2 instance runs?|Route table|AMI|Security group|Subnet|1|The AMI holds the OS image.
+Linux commands|e|Which command moves or renames a file?|cp|mv|rm|touch|1|mv moves and renames.
+Linux commands|m|Which command removes an empty directory?|rmdir|rm -f|mkdir|cd|0|rmdir only removes empty directories.
+AWS and networking|m|Which AWS service runs code without servers, triggered by events?|EC2|S3|Lambda|VPC|2|Lambda is serverless compute.
+Linux commands|m|Which command shows a live view of running processes?|top|ls|echo|tail|0|top shows live CPU and memory use per process.
+AWS and networking|m|Where does a bastion host sit?|In the private subnet|In the public subnet|Outside the VPC|Inside the database|1|The bastion is in the public subnet so you can reach it, then hop inward.
+AWS and networking|m|Which component must the public subnet’s route table point to for internet access?|NAT gateway|Internet Gateway|Security group|AMI|1|Public subnets route to an Internet Gateway.`;
+const Q0=RAW.split("\n").map((l,i)=>{const p=l.split("|");return{t:p[0],d:p[1],q:p[2],o:p.slice(3,7),a:+p[7],e:p[8],f:"h"+i}});
+const DN={e:"Easy",m:"Medium",h:"Hard"},K="cloudquiz.v1",L="ABCD";
+const $=document.getElementById("app");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function load(){try{return JSON.parse(localStorage.getItem(K))||{name:"",hist:[]}}catch(e){return{name:"",hist:[]}}}
+function save(d){try{localStorage.setItem(K,JSON.stringify(d))}catch(e){}}
+const F=[
+{a:d=>`Which Linux command ${d}?`,b:t=>`What does the command ${t} do?`,r:`
+@Linux commands
+e~ls~lists the files in a directory
+e~cd~changes the current directory
+e~pwd~prints the directory you are currently in
+e~mkdir~creates a new directory
+e~touch~creates an empty file
+e~cp~copies a file
+e~mv~moves or renames a file
+e~rm~deletes a file
+m~rmdir~removes an empty directory
+e~cat~prints the whole contents of a file to the screen
+m~head~shows the first lines of a file
+m~tail~shows the last lines of a file
+m~grep~searches text for a matching pattern
+m~find~searches for files by name or other criteria
+h~wc~counts the lines, words and characters in a file
+e~nano~opens a beginner-friendly terminal text editor
+h~ln~creates a link to a file
+m~man~shows the manual page for a command
+e~clear~clears the terminal screen
+e~echo~prints text to the screen
+m~history~lists the commands you ran earlier
+h~tar~bundles files into an archive or extracts one
+e~whoami~shows your current username
+e~useradd~creates a new user
+e~passwd~sets or changes a user’s password
+m~userdel~deletes a user account
+m~usermod~modifies an existing user account
+m~groupadd~creates a new group
+m~su~switches to another user account
+e~sudo~runs a command with administrator privileges
+h~id~shows a user’s numeric ID and group memberships
+@Permissions
+m~chmod~changes the permissions of a file
+m~chown~changes the owner of a file
+h~chgrp~changes the group that owns a file
+@Linux commands
+e~apt update~refreshes the list of available packages
+m~apt upgrade~installs newer versions of the packages you already have
+e~apt install~downloads and installs a package from the repositories
+m~apt remove~removes an installed package
+h~apt search~searches the repositories for packages by keyword
+h~dpkg -i~installs a package from a .deb file you already downloaded
+h~lsb_release -a~shows which Ubuntu version is installed
+m~top~shows a live, updating view of running processes
+m~ps~shows a snapshot of running processes
+m~kill~sends a signal to stop a process
+m~df -h~shows free and used space on each mounted disk
+m~free -h~shows memory usage
+h~uname -a~shows system and kernel information
+h~systemctl status~shows whether a service is running
+h~systemctl restart~restarts a service
+h~journalctl~shows logs collected by systemd
+m~ping~tests whether another host is reachable over the network
+e~ssh~connects securely to a remote machine
+m~scp~copies files securely between machines
+m~curl~sends web requests and prints the response
+h~ip addr~shows network interfaces and IP addresses
+m~crontab -e~edits your list of cron jobs
+m~crontab -l~lists your cron jobs
+e~exit~closes the current shell session
+m~less~lets you scroll through a file one screen at a time
+m~sort~sorts lines of text
+m~date~shows the current date and time
+m~hostname~shows the name of the machine
+h~uptime~shows how long the system has been running
+h~alias~creates a shortcut for a longer command
+h~mount~attaches a filesystem so you can use it
+h~lsblk~lists disks and partitions
+m~du -sh~shows how much disk space a directory uses
+h~env~shows the environment variables
+m~which~shows the location of a command
+`},
+{a:d=>`Which chmod mode ${d}?`,b:t=>`What does chmod ${t} do?`,e:(t,d)=>`chmod ${t} ${d}.`,r:`
+@Permissions
+h~755~gives the owner full access and the group and others read and execute only
+h~644~gives the owner read and write, and everyone else read only
+h~600~lets only the owner read and write the file
+h~700~gives only the owner read, write and execute
+m~777~gives everyone read, write and execute
+h~400~lets only the owner read the file
+`},
+{a:d=>`In bash, which item ${d}?`,b:t=>`In bash, what does ${t} do?`,r:`
+@Bash
+e~#~starts a comment line
+e~#!/bin/bash~tells the system to run the script with bash
+e~$name~expands to the value of the variable called name
+m~name=Prime~assigns a value to a variable, with no spaces around the equals sign
+m~read~reads input typed by the user into a variable
+m~$1~holds the first argument passed to the script
+h~$?~holds the exit status of the last command
+h~$#~holds the number of arguments passed to the script
+m~if~runs commands only when a condition is true
+m~for~repeats commands for each item in a list
+m~while~repeats commands as long as a condition is true
+h~fi~ends an if block
+h~done~ends a for or while loop
+h~&&~runs the next command only if the previous one succeeded
+m~|~sends the output of one command into another
+m~>~writes command output to a file, replacing its contents
+m~>>~appends command output to the end of a file
+m~./script.sh~runs a script in the current directory
+m~$HOME~holds the path of your home directory
+`},
+{a:d=>`Which cron entry ${d}?`,b:t=>`What does the cron entry ${t} do?`,r:`
+@Cron
+e~* * * * *~runs every minute
+m~0 * * * *~runs at the start of every hour
+m~0 0 * * *~runs every day at midnight
+m~0 2 * * *~runs every day at 2 a.m.
+m~*/5 * * * *~runs every five minutes
+m~30 6 * * *~runs every day at 6:30 a.m.
+h~0 0 * * 0~runs every Sunday at midnight
+h~0 9 * * 1~runs every Monday at 9 a.m.
+h~0 0 1 * *~runs on the first day of every month at midnight
+h~0 12 * * 1-5~runs at noon from Monday to Friday
+h~*/10 * * * *~runs every ten minutes
+h~0 18 * * 5~runs every Friday at 6 p.m.
+h~0 0 1 1 *~runs once a year, at midnight on January 1st
+`},
+{a:d=>`Which port does ${d} use by default?`,b:t=>`Which service uses port ${t} by default?`,e:(t,d)=>`Port ${t} is the default for ${d}.`,r:`
+@Ports
+e~22~SSH
+e~80~HTTP
+e~443~HTTPS
+m~3306~MySQL
+m~5432~PostgreSQL
+m~21~FTP
+h~25~SMTP
+h~53~DNS
+h~3389~Windows Remote Desktop (RDP)
+h~27017~MongoDB
+h~6379~Redis
+h~23~Telnet
+`},
+{a:d=>`Which cloud term ${d}?`,b:t=>`Which description fits ${t}?`,r:`
+@Cloud models
+e~IaaS~gives you virtual machines, storage and networking that you manage yourself
+e~PaaS~lets you deploy code while the provider manages the operating system and runtime
+e~SaaS~delivers a finished application you simply log in and use
+m~Public cloud~is run by a provider and shared by many customers over the internet
+m~Private cloud~is dedicated to a single organization
+m~Hybrid cloud~combines private or on-premises infrastructure with a public cloud
+m~Elasticity~is the ability to scale resources up and down with demand
+m~Region~is a geographic area that contains several data centers
+m~Availability Zone~is one or more separate data centers inside a region
+e~Pay-as-you-go~means you pay only for what you use
+h~Serverless~lets you run code without managing servers
+h~Virtualization~lets one physical machine run several virtual machines
+h~Hypervisor~is the software that creates and runs virtual machines
+h~Shared responsibility model~splits security duties between the provider and the customer
+m~Multi-tenancy~means many customers share the same underlying infrastructure
+e~AWS~is Amazon’s cloud platform
+e~Microsoft Azure~is Microsoft’s cloud platform
+e~Google Cloud~is Google’s cloud platform
+e~Compute Engine~is Google Cloud’s virtual machine service
+m~Azure Virtual Machines~is Microsoft Azure’s virtual machine service
+`},
+{a:d=>`Which AWS term ${d}?`,b:t=>`Which description fits ${t}?`,r:`
+@AWS and networking
+e~Amazon EC2~provides virtual servers (instances) in the cloud
+e~Amazon S3~stores objects such as files, images and static websites
+e~Amazon RDS~runs managed relational databases such as MySQL
+e~AWS Lambda~runs your code without servers, triggered by events
+m~Amazon DynamoDB~is a managed NoSQL database
+m~Amazon VPC~gives you your own isolated virtual network
+m~AWS IAM~manages users, roles and permissions
+m~Amazon CloudWatch~collects metrics and logs for monitoring
+h~Amazon CloudFront~is a content delivery network that caches content near users
+h~Amazon Route 53~is AWS’s DNS service
+h~Elastic Load Balancing~spreads incoming traffic across several targets
+h~Amazon EBS~provides block storage volumes for EC2 instances
+h~AWS Elastic Beanstalk~is a PaaS that deploys your application for you
+h~Amazon SNS~sends notifications to subscribers
+h~Amazon SQS~queues messages between application components
+m~Amazon API Gateway~creates and exposes HTTP APIs
+h~AWS CloudFormation~builds infrastructure from templates
+m~AWS CLI~lets you manage AWS services from the command line
+h~AWS Free Tier~gives limited free usage of some AWS services to new accounts
+h~AWS Auto Scaling~adds or removes EC2 instances based on demand
+m~AWS Budgets~alerts you when your costs pass a threshold
+m~Internet Gateway~lets a public subnet send and receive traffic from the internet
+h~NAT gateway~lets private instances start outbound connections to the internet
+m~Public subnet~has a route to an Internet Gateway
+m~Private subnet~has no direct route to the internet
+m~Security group~acts as a virtual firewall for an instance
+m~Route table~decides where network traffic from a subnet is sent
+m~Elastic IP~is a static public IPv4 address
+m~Bastion host~is a secure entry point for reaching instances in a private subnet
+h~CIDR block~is the notation for an IP range, such as 10.0.0.0/16
+e~Key pair~is the public and private key used to log in to an instance over SSH
+h~Network ACL~is a stateless firewall at the subnet level
+h~VPC endpoint~lets private resources reach AWS services without using the internet
+m~AMI~is a template used to launch EC2 instances
+m~Subnet~is a smaller range of IP addresses inside a VPC
+`}];
+function mk(){
+  const out=[];let n=0;
+  F.forEach(g=>{
+    let tp="";const fs=[];
+    g.r.trim().split("\n").forEach(l=>{if(l[0]==="@"){tp=l.slice(1);return}const p=l.split("~");fs.push({t:tp,d:p[0],x:p[1],y:p[2],f:"g"+(n++)})});
+    fs.forEach(f=>{
+      const ex=g.e?g.e(f.x,f.y):`${f.x} ${f.y}.`;
+      const oth=()=>shuf(fs.filter(z=>z!==f)).slice(0,3);
+      out.push({t:f.t,d:f.d,q:g.a(f.y),o:[f.x,...oth().map(z=>z.x)],a:0,e:ex,f:f.f});
+      out.push({t:f.t,d:f.d,q:g.b(f.x),o:[f.y,...oth().map(z=>z.y)],a:0,e:ex,f:f.f});
+    });
+  });
+  return out;
+}
+const seen=new Set();
+const Q=Q0.concat(mk()).filter(q=>!seen.has(q.q)&&seen.add(q.q));
+const N=50;
+function draw(){
+  const quota={e:20,m:18,h:12},cap=10,tc={},fu=new Set(),pick=[],pool=shuf(Q);
+  [true,false].forEach(strict=>pool.forEach(q=>{
+    if(pick.length>=N||fu.has(q.f))return;
+    if(strict&&(quota[q.d]<=0||(tc[q.t]||0)>=cap))return;
+    pick.push(q);fu.add(q.f);quota[q.d]--;tc[q.t]=(tc[q.t]||0)+1;
+  }));
+  return pick;
+}
+
+const API="https://2po3zlefl5.execute-api.us-east-1.amazonaws.com";
+function loadBoard(){
+  const el=document.getElementById("board");if(!el)return;
+  fetch(API+"/scores").then(r=>r.json()).then(rows=>{
+    el.innerHTML=rows.length?`<table><tr><th>#</th><th>Player</th><th>Best</th><th>Attempts</th></tr>${rows.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.name)}</td><td>${esc(r.score)}/${esc(r.total)}</td><td>${esc(r.attempts)}</td></tr>`).join("")}</table>`:`<p class="mute">No scores yet. Be the first.</p>`;
+  }).catch(()=>{el.innerHTML=`<p class="mute">Class scoreboard unavailable right now.</p>`});
+}
+let D=load(),S={mode:"random"};
+
+function build(mode){
+  let pick=draw();
+  if(mode!=="random")pick.sort((x,y)=>"emh".indexOf(x.d)-"emh".indexOf(y.d));
+  return pick.map(q=>{const o=shuf(q.o.map((t,i)=>[t,i===q.a]));return{...q,o:o.map(x=>x[0]),a:o.findIndex(x=>x[1])}});
+}
+
+function home(){
+  const best={};
+  D.hist.forEach(h=>{const k=h.name;if(!best[k]||h.score>best[k].score)best[k]={...h,n:0};});
+  D.hist.forEach(h=>best[h.name].n++);
+  const rows=Object.values(best).sort((a,b)=>b.score-a.score||b.at-a.at).slice(0,10);
+  $.innerHTML=`<h1>Cloud Engineering Quiz</h1>
+  <p class="mute">Linux, bash, cron, cloud models and AWS basics. ${N} questions per attempt, then a cheat sheet for what you missed.</p>
+  <div class="card"><label for="nm">Your name</label><input id="nm" type="text" maxlength="24" value="${esc(D.name)}" autocomplete="nickname">
+  <label style="margin-top:14px">Question order</label>
+  <div class="row modes" style="margin-top:0">
+   <button data-m="random" aria-pressed="${S.mode==="random"}">Random<small>Mixed difficulty</small></button>
+   <button data-m="climb" aria-pressed="${S.mode==="climb"}">Easy to hard<small>Warm up, then climb</small></button></div>
+  <div class="row"><button class="primary" id="go">Start exam</button></div></div>
+  <h2>Class scoreboard</h2><div class="card" id="board"><p class="mute">Loading…</p></div>
+  <h2>Your scores on this device</h2>
+  ${rows.length?`<div class="card"><table><tr><th>Player</th><th>Best</th><th>Attempts</th></tr>${rows.map(r=>`<tr><td>${esc(r.name)}</td><td>${r.score}/${N}</td><td>${r.n}</td></tr>`).join("")}</table></div>
+  <button id="clr" class="mute">Clear scores</button>`:`<p class="mute">No exams taken yet. Finish an exam and your score shows up here.</p>`}
+  <p class="mute">Scores are saved in this browser only, so each person sees their own device’s scoreboard.</p>`;
+  $.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{D.name=document.getElementById("nm").value;S.mode=b.dataset.m;home()});
+  document.getElementById("go").onclick=()=>{
+    const n=document.getElementById("nm").value.trim();
+    if(!n){document.getElementById("nm").focus();document.getElementById("nm").placeholder="Enter a name to start";return}
+    D.name=n;save(D);S={mode:S.mode,qs:build(S.mode),i:0,score:0,miss:[],done:false};ask();
+  };
+  const c=document.getElementById("clr");if(c)c.onclick=()=>{if(confirm("Clear all saved scores on this device?")){D.hist=[];save(D);home()}};
+  loadBoard();
+}
+
+function ask(){
+  const q=S.qs[S.i];S.done=false;
+  $.innerHTML=`<div class="meta"><span>${esc(D.name)} · Question ${S.i+1} of ${N}</span><span>Score ${S.score}</span></div>
+  <div class="bar"><i style="width:${S.i/N*100}%"></i></div>
+  <p class="tag">${esc(q.t)} · ${DN[q.d]}</p>
+  <div class="term">${esc(q.q)}</div>
+  ${q.o.map((t,i)=>`<button class="opt" data-i="${i}"><b>${L[i]}</b><span>${esc(t)}</span></button>`).join("")}
+  <div id="fb"></div>`;
+  $.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pickAns(+b.dataset.i));
+}
+
+function pickAns(i){
+  if(S.done)return;S.done=true;
+  const q=S.qs[S.i],ok=i===q.a;
+  if(ok)S.score++;else S.miss.push({...q,got:i});
+  $.querySelectorAll(".opt").forEach((b,k)=>{b.disabled=true;if(k===q.a)b.classList.add("ok");else if(k===i)b.classList.add("bad")});
+  const last=S.i===N-1;
+  document.getElementById("fb").innerHTML=`<div class="exp"><b class="${ok?"right":""}">${ok?"Correct.":"Not quite. The answer is "+L[q.a]+"."}</b><p>${esc(q.e)}</p></div>
+  <button class="primary" id="nx">${last?"See results":"Next question"}</button>`;
+  const n=document.getElementById("nx");n.focus();
+  n.onclick=()=>{if(last)finish();else{S.i++;ask()}};
+}
+
+function finish(){
+  D.hist.push({name:D.name,score:S.score,mode:S.mode,at:Date.now()});save(D);
+  const g={};S.miss.forEach(m=>(g[m.t]=g[m.t]||[]).push(m));
+  const topics=Object.keys(g);
+  const msg=S.score>=N*.9?"Exam ready.":S.score>=N*.7?"Solid. Tighten the gaps below.":S.score>=N*.5?"Getting there. Work through the cheat sheet.":"Start with the cheat sheet, then try again.";
+  $.innerHTML=`<h1>Exam complete</h1>
+  <div class="card"><div class="big">${S.score}/${N}</div><p>${msg}</p><p class="mute" id="sv">Saving to the class scoreboard…</p></div>
+  <h2>${esc(D.name)}’s cheat sheet</h2>
+  ${topics.length?`<p class="mute">Topics to revise: ${topics.map(esc).join(", ")}.</p>`+topics.map(t=>`<div class="card"><b>${esc(t)}</b>${g[t].map(m=>`<div class="miss"><p>${esc(m.q)}</p><p class="right">Answer: ${esc(m.o[m.a])}</p><p class="mute">You chose: ${esc(m.o[m.got])}</p><p>${esc(m.e)}</p></div>`).join("")}</div>`).join(""):`<div class="card"><p>No gaps this round. Try the other question order for a fresh run.</p></div>`}
+  <div class="row noprint"><button class="primary" id="again">Take it again</button><button id="pr">Print or save as PDF</button><button id="hm">Scoreboard</button></div>`;
+  document.getElementById("again").onclick=()=>{S={mode:S.mode,qs:build(S.mode),i:0,score:0,miss:[],done:false};ask()};
+  document.getElementById("pr").onclick=()=>window.print();
+  document.getElementById("hm").onclick=home;
+  fetch(API+"/results",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:D.name,score:S.score,total:N,mode:S.mode})})
+    .then(r=>{document.getElementById("sv").textContent=r.ok?"Score saved to the class scoreboard.":"Could not save to the class scoreboard."})
+    .catch(()=>{const e=document.getElementById("sv");if(e)e.textContent="Could not reach the class scoreboard. Your score is saved on this device."});
+}
+home();
+</script>
+</body>
+</html>
