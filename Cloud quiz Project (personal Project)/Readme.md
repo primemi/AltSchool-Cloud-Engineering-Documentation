@@ -2,7 +2,9 @@
 
 A serverless quiz web app with a shared class scoreboard, built on AWS. Each attempt is a 50-question exam drawn at random from a larger question bank, and students get a personal cheat sheet of the topics they missed.
 
-Built as part of my cloud engineering studies. Full write-up: _add your Medium link here_.
+Built as part of my cloud engineering studies. Full write-up: https://medium.com/@kcajetan/i-built-a-serverless-cloud-quiz-on-aws-s3-lambda-dynamodb-and-api-gateway-a-step-by-step-002d1817f5d6?sharedUserId=kcajetan
+
+This the link to the Website: https://practical-questions.s3.us-east-1.amazonaws.com/index+(4).html
 
 ## Features
 
